@@ -1,0 +1,156 @@
+<!doctype html>
+<html>
+    
+    <head>
+        <meta charset="utf-8">
+        <title>Todo's</title>
+        <link rel="stylesheet" type="text/css" href="testCss.css" />
+        <script src="http://yui.yahooapis.com/3.17.2/build/yui/yui-min.js"></script>
+        <script>
+            YUI().use('event-focus', 'json', 'model', 'model-list', 'view', function(Y) {
+                var TodoAppView, TodoList, TodoModel, TodoView;
+            });
+        </script>
+        
+        <body onload="init();"> 
+           
+            <div id="main">
+                <ul id="todoItems"></ul>
+                <form type="post" onsubmit="addTodo(); return false;">
+                    <label class="todo-label" for="new-todo">Enter Your Todo Tasks Here:</label>
+                    <input type="text" id="todo" name="todo" placeholder="Text" style="width: 200px;" />
+                    <input type="submit" value="Enter" />
+                </form>
+                <script>
+                    var create = {};
+                    create.webdb = {};
+                    create.webdb.db = null;
+
+                    create.webdb.open = function() {
+                        var dbSize = 5 * 1024 * 1024; // 5MB
+                        create.webdb.db = openDatabase("Todo", "1.0", "Todo manager", dbSize);
+                    }
+
+                    create.webdb.createTable = function() {
+                        var db = create.webdb.db;
+                        db.transaction(function(tx) {
+                            tx.executeSql("CREATE TABLE IF NOT EXISTS todo(ID INTEGER PRIMARY KEY ASC, todo TEXT, added_on DATETIME)", []);
+                        });
+                    }
+
+                    create.webdb.addTodo = function(todoText) {
+                        var db = create.webdb.db;
+                        db.transaction(function(tx) {
+                            var addedOn = new Date();
+                            tx.executeSql("INSERT INTO todo(todo, added_on) VALUES (?,?)", [todoText, addedOn],
+                            create.webdb.onSuccess,
+                            create.webdb.onError);
+                        });
+                    }
+
+                    create.webdb.onError = function(tx, e) {
+                        alert("There has been an error: " + e.message);
+                    }
+
+                    create.webdb.onSuccess = function(tx, r) {
+                        // re-render the data.
+                        create.webdb.getAllTodoItems(loadTodoItems);
+                    }
+
+
+                    create.webdb.getAllTodoItems = function(renderFunc) {
+                        var db = create.webdb.db;
+                        db.transaction(function(tx) {
+                            tx.executeSql("SELECT * FROM todo", [], renderFunc,
+                            create.webdb.onError);
+                        });
+                    }
+
+                    create.webdb.deleteTodo = function(id) {
+                        var db = html5rocks.webdb.db;
+                        db.transaction(function(tx) {
+                            tx.executeSql("DELETE FROM todo WHERE ID=?", [id],
+                            create.webdb.onSuccess,
+                            create.webdb.onError);
+                        });
+                    }
+
+                    function loadTodoItems(tx, rs) {
+                        var rowOutput = "";
+                        var todoItems = document.getElementById("todoItems");
+                        for (var i = 0; i < rs.rows.length; i++) {
+                            rowOutput += renderTodo(rs.rows.item(i));
+                        }
+
+                        todoItems.innerHTML = rowOutput;
+                    }
+
+                    function renderTodo(row) {
+                        return "<li>" + row.todo + " <a href='javascript:void(0);'  onclick='create.webdb.deleteTodo(" + row.ID + ");'>Clear</a></li>";
+                    }
+
+                    function init() {
+                        create.webdb.open();
+                        create.webdb.createTable();
+                        create.webdb.getAllTodoItems(loadTodoItems);
+                    }
+
+                    function addTodo() {
+                        var todo = document.getElementById("todo");
+                        create.webdb.addTodo(todo.value);
+                        todo.value = "";
+                    }
+                </script>
+    
+ 
+    <div id="wrap">
+        <div id="screen">
+            <div id="header">
+                <div id="title">
+                    <!--<h1>Todo:</h1>-->
+                </div>
+                <!--end #header-->
+                <!--<p>Enter Your Tasks Here:</p>
+
+<input type="button" onclick="myFunction()" id="myBtn" value="Enter">
+
+<p id="demo"></p>
+
+<script>
+function myFunction() {
+    var x = document.getElementById("myBtn").value;
+    document.getElementById("demo").innerHTML = x;
+}
+</script>
+
+<form name="input" action="demo_form_action.asp" method="post">
+Enter Task Here: <input type="text" name="FirstName" value=""><br>
+<input type="submit" value="Submit">
+</form>
+
+<div id="table">
+<table style="width:300px">
+<tr>
+  <td></td>
+  <td></td> 
+  <td></td>
+</tr>
+</table>
+
+</h2>
+</div>
+</div>
+
+<div id="sidebar">
+<div id="list">
+<h3>List</h3>
+</div>-->
+                <div id="footer">
+                    <footer>
+                        <!--<a href="https://github.com/caseysh">My Git</a>-->
+                    </footer>
+                </div>
+            </div>
+            </body>
+            </head>
+</html>
