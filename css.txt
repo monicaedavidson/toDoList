@@ -1,3 +1,7 @@
+
+
+
+ 
 @charset"utf-8";
 
 /* CSS Todo */
@@ -29,13 +33,7 @@
 #main {
     text-align: center
 }
-/*#main {
-    text-shadow:
-    4px 4px 0 #000,
-    1px 4px 0 #000,
-    4px 1px 0 #000,
-    1px 1px 0 #000;  
-}*/
+
 #main {
     height: 265px;
     width: 500px;
@@ -67,8 +65,8 @@
     position: absolute;
 }
 
- body {
-    background:url(http://s30.postimg.org/j2iz8ymdt/substancial_New.jpg);            position: absolute;
+body {
+background:url(http://s30.postimg.org/j2iz8ymdt/substancial_New.jpg);            position: absolute;
 min-height:100%;
 width: 100%;
 height: auto;
